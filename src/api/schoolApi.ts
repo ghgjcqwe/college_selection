@@ -31,11 +31,15 @@ export async function matchSchools(
   score: number,
   province: string
 ): Promise<{ sprint: School[]; safe: School[]; guarantee: School[] }> {
+  console.log('matchSchools called:', { score, province })
   const response = await fetch(
     `${BASE_URL}/schools/match?score=${score}&province=${province}`
   )
+  console.log('matchSchools response:', response.status, response.statusText)
   if (!response.ok) {
     throw new Error('匹配学校失败')
   }
-  return response.json()
+  const data = await response.json()
+  console.log('matchSchools data:', data)
+  return data
 }

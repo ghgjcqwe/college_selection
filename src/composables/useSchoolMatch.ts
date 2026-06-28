@@ -32,8 +32,11 @@ export function useSchoolMatch() {
     
     isLoading.value = true
     try {
+      console.log('executeMatch called:', { userScore: userScore.value, selectedProvince: selectedProvince.value })
       const result = await apiMatchSchools(userScore.value, selectedProvince.value)
+      console.log('executeMatch result:', result)
       matchResult.value = result
+      console.log('matchResult updated:', matchResult.value)
     } catch (error) {
       console.error('匹配学校失败:', error)
     } finally {

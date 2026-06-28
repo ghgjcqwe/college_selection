@@ -44,7 +44,20 @@
         <div class="space-y-4">
           <div>
             <label class="block text-gray-700 font-medium mb-2">
-              DeepSeek API Key
+              API 提供商
+            </label>
+            <select
+              v-model="providerInput"
+              class="input-field w-full"
+            >
+              <option value="deepseek">DeepSeek</option>
+              <option value="siliconflow">硅基流动</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-medium mb-2">
+              API Key
             </label>
             <div class="flex space-x-3">
               <input
@@ -124,11 +137,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getApiKey, saveApiKey as saveKey, clearApiKey as clearKey, hasApiKey as hasKey } from '@/utils/apiKeyManager'
+import { getApiKey, saveApiKey as saveKey, clearApiKey as clearKey, hasApiKey as hasKey, getApiProvider, saveApiProvider } from '@/utils/apiKeyManager'
 
 const router = useRouter()
 
 const apiKeyInput = ref('')
+const providerInput = ref<'deepseek' | 'siliconflow'>('deepseek')
 const showKey = ref(false)
 const currentKey = ref('')
 
@@ -139,10 +153,11 @@ const hasApiKey = computed(() => {
 onMounted(() => {
   currentKey.value = getApiKey()
   apiKeyInput.value = currentKey.value
+  providerInput.value = getApiProvider()
 })
 
 /**
- * 保存 API Key
+ * 保存 API Key 和提供商
  */
 function saveApiKey() {
   const key = apiKeyInput.value.trim()
@@ -155,8 +170,9 @@ function saveApiKey() {
     return
   }
   saveKey(key)
+  saveApiProvider(providerInput.value)
   currentKey.value = key
-  alert('API Key 保存成功！')
+  alert('配置保存成功！')
 }
 
 /**

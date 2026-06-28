@@ -137,7 +137,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getApiKey } from '@/utils/apiKeyManager'
+import { getApiKey, getApiProvider } from '@/utils/apiKeyManager'
 
 const router = useRouter()
 
@@ -195,7 +195,8 @@ async function sendMessage(text?: string) {
       body: JSON.stringify({
         message: messageText,
         conversationId: conversationId.value,
-        apiKey: userApiKey || undefined,  // 如果用户没配置，不传递，使用后端默认
+        apiKey: userApiKey || undefined,
+        provider: getApiProvider(),
         userInfo: {
           timestamp: new Date().toISOString()
         }

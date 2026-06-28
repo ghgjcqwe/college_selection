@@ -2,14 +2,23 @@ const express = require('express')
 const axios = require('axios')
 const router = express.Router()
 
-// 硅基流动 API 配置（支持 DeepSeek 等多种模型）
-const SILICONFLOW_API_URL = 'https://api.siliconflow.cn/v1/chat/completions'
-// 默认使用的模型
-const DEFAULT_MODEL = 'deepseek-ai/DeepSeek-V3'
+// API 配置
+const API_CONFIG = {
+  deepseek: {
+    url: 'https://api.deepseek.com/chat/completions',
+    model: 'deepseek-chat'
+  },
+  siliconflow: {
+    url: 'https://api.siliconflow.cn/v1/chat/completions',
+    model: 'deepseek-ai/DeepSeek-V3'
+  }
+}
 
-// 默认 API Key（请在此处配置你的硅基流动 API Key）
-// 如果未配置，用户需要在前端设置页面配置自己的 API Key
-const DEFAULT_API_KEY = process.env.SILICONFLOW_API_KEY || ''
+// 默认 API Key（请在此处配置你的默认 API Key）
+const DEFAULT_API_KEY = {
+  deepseek: process.env.DEEPSEEK_API_KEY || '',
+  siliconflow: process.env.SILICONFLOW_API_KEY || ''
+}
 
 /**
  * 高考志愿填报助手的系统提示词
@@ -38,20 +47,26 @@ const conversations = new Map()
  * 发送消息给大模型
  */
 router.post('/', async (req, res) => {
-  const { message, conversationId = 'default', apiKey, userInfo = {} } = req.body
+  const { message, conversationId = 'default', apiKey, provider = 'deepseek', userInfo = {} } = req.body
 
   if (!message) {
     return res.status(400).json({ error: '请提供消息内容' })
   }
 
+  // 验证provider
+  const config = API_CONFIG[provider]
+  if (!config) {
+    return res.status(400).json({ error: '不支持的API提供商' })
+  }
+
   // 优先使用用户配置的 API Key，其次使用默认 API Key
-  const effectiveApiKey = apiKey || DEFAULT_API_KEY
+  const effectiveApiKey = apiKey || DEFAULT_API_KEY[provider]
 
   // 如果没有配置 API Key，返回提示
   if (!effectiveApiKey) {
     return res.status(503).json({
       error: 'AI服务未配置',
-      message: '请在设置页面配置 API Key',
+      message: `请在设置页面配置 ${provider === 'deepseek' ? 'DeepSeek' : '硅基流动'} API Key`,
       hint: '访问 /settings 页面进行配置',
       needConfig: true
     })
@@ -71,11 +86,11 @@ router.post('/', async (req, res) => {
       { role: 'user', content: message }
     ]
 
-    // 调用硅基流动 API
+    // 调用对应提供商的 API
     const response = await axios.post(
-      SILICONFLOW_API_URL,
+      config.url,
       {
-        model: DEFAULT_MODEL,
+        model: config.model,
         messages: messages,
         stream: false
       },
