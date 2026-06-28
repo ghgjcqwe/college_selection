@@ -122,24 +122,25 @@ import { computed, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useSchoolMatch } from '@/composables/useSchoolMatch'
 import { provinces } from '@/data/provinces'
+import type { School } from '@/types'
 
 const route = useRoute()
 const router = useRouter()
-const { getSchoolById, selectedProvince, getProvinceScore } = useSchoolMatch()
+const { selectedProvince, getProvinceScore } = useSchoolMatch()
 
 const isLoading = ref(true)
+const school = ref<School | undefined>(undefined)
 
-onMounted(() => {
-  isLoading.value = false
-})
-
-/**
- * 根据路由参数获取学校信息
- */
-const school = computed(() => {
+onMounted(async () => {
   const id = parseInt(route.params.id as string, 10)
-  if (isNaN(id)) return undefined
-  return getSchoolById(id)
+  if (isNaN(id)) {
+    isLoading.value = false
+    return
+  }
+  
+  const { getSchoolById } = useSchoolMatch()
+  school.value = await getSchoolById(id)
+  isLoading.value = false
 })
 
 /**

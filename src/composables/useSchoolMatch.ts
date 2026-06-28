@@ -1,10 +1,12 @@
 import { ref, computed } from 'vue'
 import type { School, SchoolMatchResult } from '@/types'
-import { schools } from '@/data/schools'
+import { matchSchools as apiMatchSchools, fetchSchoolById as apiFetchSchoolById } from '@/api/schoolApi'
 
 const userScore = ref<number | null>(null)
 const userRank = ref<number | null>(null)
 const selectedProvince = ref<string>('hubei')
+const matchResult = ref<SchoolMatchResult>({ sprint: [], safe: [], guarantee: [] })
+const isLoading = ref(false)
 
 /**
  * 学校匹配逻辑 composable
@@ -23,56 +25,38 @@ export function useSchoolMatch() {
   }
 
   /**
-   * 匹配结果：分三档
-   * - 冲刺档：学校最低分 ≥ 用户分数，且分差 ≤ 20 分
-   * - 稳妥档：用户分数 > 学校最低分，且分差 ≤ 30 分
-   * - 保底档：用户分数 - 学校最低分 > 30 分
+   * 执行学校匹配（调用后端 API）
    */
-  const matchResult = computed<SchoolMatchResult>(() => {
-    if (userScore.value === null) {
-      return { sprint: [], safe: [], guarantee: [] }
+  async function executeMatch() {
+    if (userScore.value === null) return
+    
+    isLoading.value = true
+    try {
+      const result = await apiMatchSchools(userScore.value, selectedProvince.value)
+      matchResult.value = result
+    } catch (error) {
+      console.error('匹配学校失败:', error)
+    } finally {
+      isLoading.value = false
     }
-
-    const score = userScore.value
-    const provinceCode = selectedProvince.value
-    const sprint: School[] = []
-    const safe: School[] = []
-    const guarantee: School[] = []
-
-    schools.forEach((school) => {
-      const schoolScore = getProvinceScore(school, provinceCode)
-      const diff = schoolScore - score
-
-      if (diff >= 0 && diff <= 20) {
-        sprint.push(school)
-      } else if (diff < 0 && Math.abs(diff) <= 30) {
-        safe.push(school)
-      } else if (diff < -30) {
-        guarantee.push(school)
-      }
-    })
-
-    sprint.sort((a, b) => getProvinceScore(a, provinceCode) - getProvinceScore(b, provinceCode))
-    safe.sort((a, b) => getProvinceScore(b, provinceCode) - getProvinceScore(a, provinceCode))
-    guarantee.sort((a, b) => getProvinceScore(b, provinceCode) - getProvinceScore(a, provinceCode))
-
-    return {
-      sprint: sprint.slice(0, 8),
-      safe: safe.slice(0, 8),
-      guarantee: guarantee.slice(0, 8),
-    }
-  })
+  }
 
   const hasResult = computed(() => {
-    const result = matchResult.value
-    return result.sprint.length > 0 || result.safe.length > 0 || result.guarantee.length > 0
+    return matchResult.value.sprint.length > 0 || 
+           matchResult.value.safe.length > 0 || 
+           matchResult.value.guarantee.length > 0
   })
 
   /**
-   * 根据ID查找学校
+   * 根据ID查找学校（调用后端 API）
    */
-  function getSchoolById(id: number): School | undefined {
-    return schools.find((s) => s.id === id)
+  async function getSchoolById(id: number): Promise<School | undefined> {
+    try {
+      return await apiFetchSchoolById(id)
+    } catch (error) {
+      console.error('获取学校详情失败:', error)
+      return undefined
+    }
   }
 
   return {
@@ -81,8 +65,10 @@ export function useSchoolMatch() {
     selectedProvince,
     matchResult,
     hasResult,
+    isLoading,
     getSchoolById,
     getProvinceScore,
+    executeMatch,
   }
 }
 

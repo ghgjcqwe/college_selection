@@ -38,6 +38,16 @@ const routes = [
     name: 'quiz-result',
     component: () => import('@/views/QuizResult.vue'),
   },
+  {
+    path: '/ai-chat',
+    name: 'ai-chat',
+    component: () => import('@/views/AIChat.vue'),
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: () => import('@/views/Settings.vue'),
+  },
 ]
 
 // 创建路由实例

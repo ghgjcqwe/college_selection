@@ -83,11 +83,11 @@
           <!-- 匹配按钮 -->
           <button
             class="btn-primary w-full text-lg py-4"
-            :disabled="!scoreInput"
-            :class="{ 'opacity-50 cursor-not-allowed': !scoreInput }"
+            :disabled="!scoreInput || isLoading"
+            :class="{ 'opacity-50 cursor-not-allowed': !scoreInput || isLoading }"
             @click="matchSchools"
           >
-            🔍 开始匹配学校
+            {{ isLoading ? '⏳ 匹配中...' : '🔍 开始匹配学校' }}
           </button>
         </div>
       </div>
@@ -170,7 +170,7 @@ import { useSchoolMatch } from '@/composables/useSchoolMatch'
 import { provinces } from '@/data/provinces'
 
 const router = useRouter()
-const { userScore, userRank, selectedProvince, matchResult, hasResult } = useSchoolMatch()
+const { userScore, userRank, selectedProvince, matchResult, hasResult, isLoading, executeMatch } = useSchoolMatch()
 
 const scoreInput = ref<number | null>(null)
 const rankInput = ref<number | null>(null)
@@ -211,11 +211,12 @@ const currentProvinceGaokaoModeDesc = computed(() => {
 /**
  * 执行学校匹配
  */
-function matchSchools() {
+async function matchSchools() {
   if (!scoreInput.value) return
   userScore.value = scoreInput.value
   userRank.value = rankInput.value
   searched.value = true
+  await executeMatch()
 }
 
 /**

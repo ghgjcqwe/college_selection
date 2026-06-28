@@ -11,6 +11,16 @@ export interface School {
   majors: string[]
 }
 
+// 省份类型定义
+export interface Province {
+  code: string
+  name: string
+  scoreFactor: number
+  maxScore: number
+  gaokaoMode: string
+  gaokaoModeDesc: string
+}
+
 // 专业类型定义
 export interface Major {
   id: number

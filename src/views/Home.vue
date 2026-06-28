@@ -18,7 +18,7 @@
         </div>
 
         <!-- 功能入口卡片 -->
-        <div class="grid md:grid-cols-2 gap-6 mb-12">
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
           <!-- 找学校 -->
           <div
             class="card p-8 cursor-pointer hover:-translate-y-2 transition-all duration-300 group text-left"
@@ -54,11 +54,39 @@
               <span class="ml-2">→</span>
             </div>
           </div>
+
+          <!-- AI助手 -->
+          <div
+            class="card p-8 cursor-pointer hover:-translate-y-2 transition-all duration-300 group text-left"
+            @click="goToAIChat"
+          >
+            <div class="text-5xl mb-4">🤖</div>
+            <h2 class="text-2xl font-bold text-gray-800 group-hover:text-purple-500 transition-colors mb-2">
+              AI志愿助手
+            </h2>
+            <p class="text-gray-600 mb-4">
+              智能问答，帮你解答志愿填报、专业选择等问题
+            </p>
+            <div class="flex items-center text-purple-500 font-medium group-hover:translate-x-1 transition-transform">
+              立即体验
+              <span class="ml-2">→</span>
+            </div>
+          </div>
         </div>
 
         <!-- 底部提示 -->
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-gray-500 mb-4">
           <p>💡 提示：数据仅供参考，请以官方发布为准</p>
+        </div>
+
+        <!-- 设置入口 -->
+        <div>
+          <button
+            class="text-gray-400 hover:text-gray-600 text-sm underline"
+            @click="goToSettings"
+          >
+            ⚙️ AI助手设置
+          </button>
         </div>
       </div>
     </main>
@@ -87,5 +115,19 @@ function goToFindSchool() {
  */
 function goToChooseMajor() {
   router.push('/choose-major')
+}
+
+/**
+ * 跳转到AI助手页面
+ */
+function goToAIChat() {
+  router.push('/ai-chat')
+}
+
+/**
+ * 跳转到设置页面
+ */
+function goToSettings() {
+  router.push('/settings')
 }
 </script>
