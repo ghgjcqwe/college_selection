@@ -1,88 +1,114 @@
 <template>
-  <div class="min-h-screen flex flex-col">
-    <!-- 主内容区 -->
-    <main class="flex-1 flex items-center justify-center py-12 px-4">
-      <div class="max-w-4xl w-full text-center animate-fade-in">
-        <!-- 标题区域 -->
+  <div class="min-h-screen flex flex-col relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+    <div class="absolute top-1/4 right-0 w-80 h-80 bg-pink-300/20 rounded-full blur-3xl translate-x-1/3"></div>
+    <div class="absolute bottom-0 left-1/3 w-72 h-72 bg-blue-300/20 rounded-full blur-3xl -translate-y-1/3"></div>
+
+    <main class="flex-1 flex items-center justify-center py-12 px-4 relative z-10">
+      <div class="max-w-5xl w-full text-center animate-fade-in">
         <div class="mb-12">
-          <div class="text-6xl mb-4 animate-bounce-soft">🎓</div>
-          <h1 class="text-4xl md:text-5xl font-bold mb-4">
-            <span class="bg-gradient-to-r from-primary-500 to-purple-600 bg-clip-text text-transparent">
+          <div class="text-7xl mb-6 animate-float">🎓</div>
+          <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+            <span class="text-gradient">
               高考志愿填报助手
             </span>
           </h1>
-          <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-            输入分数，快速找到适合你的大学<br />
-            测一测，发现最适合你的专业
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            智能推荐 · 精准匹配 · 科学决策<br />
+            <span class="text-gray-500 text-lg">让每一分都物尽其用</span>
           </p>
         </div>
 
-        <!-- 功能入口卡片 -->
-        <div class="grid md:grid-cols-3 gap-6 mb-12">
-          <!-- 找学校 -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           <div
-            class="card p-8 cursor-pointer hover:-translate-y-2 transition-all duration-300 group text-left"
+            class="card p-6 cursor-pointer hover:-translate-y-2 transition-all duration-300 group text-left relative overflow-hidden"
             @click="goToFindSchool"
           >
-            <div class="text-5xl mb-4">📊</div>
-            <h2 class="text-2xl font-bold text-gray-800 group-hover:text-primary-600 transition-colors mb-2">
-              分数找学校
-            </h2>
-            <p class="text-gray-600 mb-4">
-              输入你的高考分数，智能推荐冲刺、稳妥、保底三档院校
-            </p>
-            <div class="flex items-center text-primary-500 font-medium group-hover:translate-x-1 transition-transform">
-              立即体验
-              <span class="ml-2">→</span>
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="relative">
+              <div class="text-5xl mb-4">📊</div>
+              <h2 class="text-xl font-bold text-gray-800 group-hover:text-gradient transition-all mb-2">
+                分数找学校
+              </h2>
+              <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                输入高考分数，智能推荐冲刺、稳妥、保底三档院校
+              </p>
+              <div class="flex items-center text-primary-500 font-medium text-sm group-hover:translate-x-1 transition-transform">
+                立即体验
+                <span class="ml-1">→</span>
+              </div>
             </div>
           </div>
 
-          <!-- 选专业 -->
           <div
-            class="card p-8 cursor-pointer hover:-translate-y-2 transition-all duration-300 group text-left"
+            class="card p-6 cursor-pointer hover:-translate-y-2 transition-all duration-300 group text-left relative overflow-hidden"
             @click="goToChooseMajor"
           >
-            <div class="text-5xl mb-4">🎯</div>
-            <h2 class="text-2xl font-bold text-gray-800 group-hover:text-secondary-500 transition-colors mb-2">
-              专业怎么选
-            </h2>
-            <p class="text-gray-600 mb-4">
-              8大学科分类浏览，更有兴趣小测试帮你找到适合的专业
-            </p>
-            <div class="flex items-center text-secondary-500 font-medium group-hover:translate-x-1 transition-transform">
-              立即体验
-              <span class="ml-2">→</span>
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-pink-400/20 to-orange-400/20 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="relative">
+              <div class="text-5xl mb-4">🎯</div>
+              <h2 class="text-xl font-bold text-gray-800 group-hover:text-gradient-pink transition-all mb-2">
+                专业怎么选
+              </h2>
+              <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                8大学科分类浏览，兴趣小测试帮你找到适合的专业
+              </p>
+              <div class="flex items-center text-pink-500 font-medium text-sm group-hover:translate-x-1 transition-transform">
+                立即体验
+                <span class="ml-1">→</span>
+              </div>
             </div>
           </div>
 
-          <!-- AI助手 -->
           <div
-            class="card p-8 cursor-pointer hover:-translate-y-2 transition-all duration-300 group text-left"
+            class="card p-6 cursor-pointer hover:-translate-y-2 transition-all duration-300 group text-left relative overflow-hidden"
             @click="goToAIChat"
           >
-            <div class="text-5xl mb-4">🤖</div>
-            <h2 class="text-2xl font-bold text-gray-800 group-hover:text-purple-500 transition-colors mb-2">
-              AI志愿助手
-            </h2>
-            <p class="text-gray-600 mb-4">
-              智能问答，帮你解答志愿填报、专业选择等问题
-            </p>
-            <div class="flex items-center text-purple-500 font-medium group-hover:translate-x-1 transition-transform">
-              立即体验
-              <span class="ml-2">→</span>
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-indigo-400/20 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="relative">
+              <div class="text-5xl mb-4">🤖</div>
+              <h2 class="text-xl font-bold text-gray-800 group-hover:text-gradient transition-all mb-2">
+                AI志愿助手
+              </h2>
+              <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                智能问答，解答志愿填报、专业选择等各种问题
+              </p>
+              <div class="flex items-center text-purple-500 font-medium text-sm group-hover:translate-x-1 transition-transform">
+                立即体验
+                <span class="ml-1">→</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="card p-6 cursor-pointer hover:-translate-y-2 transition-all duration-300 group text-left relative overflow-hidden"
+            @click="goToVolunteerPlan"
+          >
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-400/20 to-teal-400/20 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="relative">
+              <div class="text-5xl mb-4">📝</div>
+              <h2 class="text-xl font-bold text-gray-800 group-hover:text-gradient-ocean transition-all mb-2">
+                志愿填报模拟
+              </h2>
+              <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                智能生成志愿方案，模拟填报流程，评估方案风险
+              </p>
+              <div class="flex items-center text-teal-500 font-medium text-sm group-hover:translate-x-1 transition-transform">
+                开始填报
+                <span class="ml-1">→</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- 底部提示 -->
-        <div class="text-sm text-gray-500 mb-4">
-          <p>💡 提示：数据仅供参考，请以官方发布为准</p>
+        <div class="flex justify-center items-center gap-2 text-sm text-gray-500 mb-8">
+          <span class="animate-pulse-soft">💡</span>
+          <p>数据仅供参考，请以官方发布为准</p>
         </div>
 
-        <!-- 设置入口 -->
         <div>
           <button
-            class="text-gray-400 hover:text-gray-600 text-sm underline"
+            class="text-gray-400 hover:text-gray-600 text-sm underline transition-colors"
             @click="goToSettings"
           >
             ⚙️ AI助手设置
@@ -91,9 +117,8 @@
       </div>
     </main>
 
-    <!-- 页脚 -->
-    <footer class="py-6 text-center text-sm text-gray-500 border-t border-gray-200">
-      <p>高考志愿填报助手 · 助你开启美好未来</p>
+    <footer class="py-6 text-center text-sm text-gray-500 border-t border-gray-200/50 relative z-10">
+      <p>高考志愿填报助手 · 助你开启美好未来 ✨</p>
     </footer>
   </div>
 </template>
@@ -122,6 +147,13 @@ function goToChooseMajor() {
  */
 function goToAIChat() {
   router.push('/ai-chat')
+}
+
+/**
+ * 跳转到志愿填报模拟页面
+ */
+function goToVolunteerPlan() {
+  router.push('/volunteer-plan')
 }
 
 /**

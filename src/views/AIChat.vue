@@ -1,7 +1,9 @@
 <template>
-  <div class="min-h-screen pb-12 flex flex-col">
-    <!-- 顶部导航 -->
-    <header class="bg-white shadow-sm sticky top-0 z-10">
+  <div class="min-h-screen pb-12 flex flex-col relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-pink-300/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
+
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-20 border-b border-white/50">
       <div class="container py-4 flex items-center">
         <button
           class="flex items-center text-gray-600 hover:text-primary-600 transition-colors"
@@ -10,14 +12,16 @@
           <span class="text-xl mr-1">←</span>
           <span>返回</span>
         </button>
-        <h1 class="text-xl font-bold text-center flex-1 mr-12">🤖 AI志愿助手</h1>
+        <h1 class="text-xl font-bold text-center flex-1 mr-12">
+          <span class="text-gradient">🤖 AI志愿助手</span>
+        </h1>
       </div>
     </header>
 
-    <!-- 需要配置API Key提示 -->
-    <div v-if="showConfigHint" class="container py-8">
-      <div class="card p-8 text-center">
-        <div class="text-6xl mb-4">🔑</div>
+    <div v-if="showConfigHint" class="container py-8 flex-1 flex items-center justify-center relative z-10">
+      <div class="card p-8 text-center max-w-md w-full relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-purple"></div>
+        <div class="text-6xl mb-4 animate-bounce-soft">🔑</div>
         <h2 class="text-2xl font-bold text-gray-800 mb-4">需要配置 API Key</h2>
         <p class="text-gray-600 mb-2">
           {{ configHintMessage }}
@@ -26,7 +30,7 @@
           支持硅基流动、DeepSeek 等平台的 API Key
         </p>
         <button
-          class="btn-primary px-8"
+          class="btn-gradient-purple px-8"
           @click="goToSettings"
         >
           前往配置
@@ -34,29 +38,30 @@
       </div>
     </div>
 
-    <!-- 欢迎信息 -->
-    <div v-else-if="messages.length === 0" class="container py-8 animate-slide-up">
-      <div class="card p-8 text-center">
-        <div class="text-6xl mb-4">🤖</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Hi，我是AI志愿助手</h2>
+    <div v-else-if="messages.length === 0" class="container py-8 animate-slide-up flex-1 flex items-center justify-center relative z-10">
+      <div class="card p-8 text-center max-w-2xl w-full relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-purple"></div>
+        <div class="text-6xl mb-4 animate-float">🤖</div>
+        <h2 class="text-2xl font-bold mb-2">
+          <span class="text-gradient">Hi，我是AI志愿助手</span>
+        </h2>
         <p class="text-gray-600 mb-6 max-w-lg mx-auto">
           我可以帮你解答高考志愿填报相关的问题，比如：
         </p>
-        <div class="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto text-left">
+        <div class="grid md:grid-cols-2 gap-3 text-left">
           <button
             v-for="suggestion in suggestions"
             :key="suggestion"
-            class="card p-4 text-left hover:shadow-md transition-shadow cursor-pointer border-2 border-transparent hover:border-primary-200"
+            class="card p-4 text-left hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer border-2 border-transparent hover:border-purple-200 group"
             @click="sendMessage(suggestion)"
           >
-            <span class="text-gray-700">{{ suggestion }}</span>
+            <span class="text-gray-700 group-hover:text-purple-600 transition-colors">{{ suggestion }}</span>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- 消息列表 -->
-    <div v-else class="flex-1 container py-6">
+    <div v-else class="flex-1 container py-6 relative z-10">
       <div class="space-y-4 max-w-3xl mx-auto">
         <div
           v-for="(msg, index) in messages"
@@ -66,38 +71,35 @@
             msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'
           ]"
         >
-          <!-- AI消息 -->
-          <div v-if="msg.role === 'assistant'" class="flex items-start max-w-[80%]">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center mr-3">
-              <span class="text-xl">🤖</span>
+          <div v-if="msg.role === 'assistant'" class="flex items-start max-w-[85%]">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center mr-3 shadow-md">
+              <span class="text-lg">🤖</span>
             </div>
-            <div class="bg-gray-100 rounded-2xl rounded-tl-sm p-4">
+            <div class="bg-white/90 backdrop-blur-sm rounded-2xl rounded-tl-sm p-4 shadow-md border border-gray-100">
               <div class="prose prose-sm max-w-none" v-html="formatMessage(msg.content)"></div>
             </div>
           </div>
 
-          <!-- 用户消息 -->
-          <div v-else class="flex items-start max-w-[80%]">
-            <div class="bg-primary-500 text-white rounded-2xl rounded-tr-sm p-4">
+          <div v-else class="flex items-start max-w-[85%]">
+            <div class="bg-gradient-to-br from-primary-500 to-purple-600 text-white rounded-2xl rounded-tr-sm p-4 shadow-md">
               <p>{{ msg.content }}</p>
             </div>
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary-200 flex items-center justify-center ml-3">
-              <span class="text-xl">👤</span>
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center ml-3 shadow-md">
+              <span class="text-lg">👤</span>
             </div>
           </div>
         </div>
 
-        <!-- 加载中 -->
         <div v-if="isLoading" class="flex justify-start animate-fade-in">
-          <div class="flex items-start max-w-[80%]">
-            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center mr-3">
-              <span class="text-xl">🤖</span>
+          <div class="flex items-start max-w-[85%]">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center mr-3 shadow-md">
+              <span class="text-lg">🤖</span>
             </div>
-            <div class="bg-gray-100 rounded-2xl rounded-tl-sm p-4">
+            <div class="bg-white/90 backdrop-blur-sm rounded-2xl rounded-tl-sm p-4 shadow-md border border-gray-100">
               <div class="flex items-center space-x-2">
-                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></div>
-                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 150ms;"></div>
-                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 300ms;"></div>
+                <div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></div>
+                <div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 150ms;"></div>
+                <div class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 300ms;"></div>
               </div>
             </div>
           </div>
@@ -105,8 +107,7 @@
       </div>
     </div>
 
-    <!-- 底部输入框 -->
-    <div v-if="!showConfigHint" class="bg-white border-t border-gray-200 sticky bottom-0">
+    <div v-if="!showConfigHint" class="bg-white/80 backdrop-blur-md border-t border-gray-200/50 sticky bottom-0 z-20">
       <div class="container py-4">
         <div class="flex space-x-3 max-w-3xl mx-auto">
           <input
@@ -118,7 +119,7 @@
             @keyup.enter="sendCurrentMessage"
           />
           <button
-            class="btn-primary px-6"
+            class="btn-gradient-purple px-6"
             :disabled="!inputMessage.trim() || isLoading"
             :class="{ 'opacity-50 cursor-not-allowed': !inputMessage.trim() || isLoading }"
             @click="sendCurrentMessage"

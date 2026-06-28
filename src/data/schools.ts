@@ -34,6 +34,26 @@ const getProvinceScores = (baseScore: number): Record<string, number> => ({
   xinjiang: Math.round(baseScore * 0.85),
 })
 
+function getMajorScores(baseScore: number, majors: string[]): { name: string; minScore: number }[] {
+  const popularMajors = ['计算机科学与技术', '软件工程', '临床医学', '金融学', '会计学', '口腔医学', '法学', '电子信息工程', '人工智能']
+  const unpopularMajors = ['护理学', '农学', '地质工程', '化学工程与工艺', '预防医学']
+  
+  return majors.map(major => {
+    let offset = 0
+    if (popularMajors.includes(major)) {
+      offset = Math.floor(Math.random() * 15) + 5
+    } else if (unpopularMajors.includes(major)) {
+      offset = -Math.floor(Math.random() * 15) - 5
+    } else {
+      offset = Math.floor(Math.random() * 10) - 5
+    }
+    return {
+      name: major,
+      minScore: Math.max(baseScore - 20, Math.min(baseScore + 20, baseScore + offset))
+    }
+  }).sort((a, b) => b.minScore - a.minScore)
+}
+
 export const schools: School[] = [
   {
     id: 1,
@@ -45,6 +65,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(680),
     description: '清华大学是中国顶尖学府之一，被誉为"红色工程师的摇篮"。学校师资力量雄厚，科研实力强，工科全国第一，理科、文科、医学等学科也均处于国内领先水平。校园环境优美，学习氛围浓厚。',
     majors: ['计算机科学与技术', '软件工程', '电子信息工程', '机械工程', '土木工程'],
+    majorScores: getMajorScores(680, ['计算机科学与技术', '软件工程', '电子信息工程', '机械工程', '土木工程']),
   },
   {
     id: 2,
@@ -56,6 +77,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(675),
     description: '北京大学是中国历史最悠久的大学之一，文理医工全面发展。文科实力全国第一，理科同样顶尖。北大以思想自由、兼容并包著称，培养了大批学术大师和治国英才。',
     majors: ['数学与应用数学', '物理学', '汉语言文学', '法学', '经济学'],
+    majorScores: getMajorScores(675, ['数学与应用数学', '物理学', '汉语言文学', '法学', '经济学']),
   },
   {
     id: 3,
@@ -67,6 +89,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(655),
     description: '浙江大学是一所历史悠久、声誉卓著的高等学府，位于风景秀丽的杭州。学校学科齐全，工科、农学、医学等学科实力强劲，是华东地区的顶尖高校之一。',
     majors: ['计算机科学与技术', '机械工程', '临床医学', '农学', '管理学'],
+    majorScores: getMajorScores(655, ['计算机科学与技术', '机械工程', '临床医学', '农学', '管理学']),
   },
   {
     id: 4,
@@ -78,6 +101,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(650),
     description: '复旦大学位于上海，是中国人自主创办的第一所高等院校。文理医并重，文科和基础医学尤为出色。上海的地理位置也为学生提供了丰富的实习和就业机会。',
     majors: ['新闻传播学', '经济学', '临床医学', '数学与应用数学', '汉语言文学'],
+    majorScores: getMajorScores(650, ['新闻传播学', '经济学', '临床医学', '数学与应用数学', '汉语言文学']),
   },
   {
     id: 5,
@@ -89,6 +113,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(648),
     description: '上海交通大学是中国最著名的高等学府之一，工科实力雄厚。学校与上海这座国际大都市深度融合，学生视野开阔，就业前景好。',
     majors: ['机械工程', '船舶与海洋工程', '计算机科学与技术', '电子信息工程', '材料科学与工程'],
+    majorScores: getMajorScores(648, ['机械工程', '船舶与海洋工程', '计算机科学与技术', '电子信息工程', '材料科学与工程']),
   },
   {
     id: 6,
@@ -100,6 +125,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(640),
     description: '南京大学是一所源远流长的高等学府，治学严谨，学风朴实。文理学科均衡发展，物理、天文、化学等基础学科在国内享有盛誉。',
     majors: ['物理学', '天文学', '化学', '汉语言文学', '计算机科学与技术'],
+    majorScores: getMajorScores(640, ['物理学', '天文学', '化学', '汉语言文学', '计算机科学与技术']),
   },
   {
     id: 7,
@@ -111,6 +137,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(645),
     description: '中国科学技术大学是中国科学院所属的一所以前沿科学和高新技术为主的大学，被誉为"中国的麻省理工"。学校少年班闻名全国，科研氛围浓厚。',
     majors: ['物理学', '化学', '数学与应用数学', '计算机科学与技术', '生物科学'],
+    majorScores: getMajorScores(645, ['物理学', '化学', '数学与应用数学', '计算机科学与技术', '生物科学']),
   },
   {
     id: 8,
@@ -122,6 +149,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(625),
     description: '武汉大学是中国最美丽的大学之一，每年三月的樱花吸引无数游客。学校学科齐全，测绘、法学、图书馆学等学科全国领先。',
     majors: ['测绘科学与技术', '法学', '图书馆学', '经济学', '生物科学'],
+    majorScores: getMajorScores(625, ['测绘科学与技术', '法学', '图书馆学', '经济学', '生物科学']),
   },
   {
     id: 9,
@@ -133,6 +161,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(620),
     description: '华中科技大学是新中国成立后由多所院校合并组建的新型大学，工科实力强劲，医学同样出色。校园面积大，学习生活设施完善。',
     majors: ['机械工程', '光学工程', '临床医学', '计算机科学与技术', '电气工程'],
+    majorScores: getMajorScores(620, ['机械工程', '光学工程', '临床医学', '计算机科学与技术', '电气工程']),
   },
   {
     id: 10,
@@ -144,6 +173,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(618),
     description: '同济大学位于上海，以工科见长，土木工程、建筑学全国第一。学校与德国联系紧密，有很多交流项目。',
     majors: ['土木工程', '建筑学', '车辆工程', '环境工程', '城乡规划'],
+    majorScores: getMajorScores(618, ['土木工程', '建筑学', '车辆工程', '环境工程', '城乡规划']),
   },
   {
     id: 11,
@@ -155,6 +185,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(630),
     description: '北京航空航天大学是中国航空航天领域的最高学府，为国家航空航天事业培养了大批人才。学校科研实力强，毕业生很受国防科技单位欢迎。',
     majors: ['航空航天工程', '计算机科学与技术', '电子信息工程', '机械工程', '材料科学与工程'],
+    majorScores: getMajorScores(630, ['航空航天工程', '计算机科学与技术', '电子信息工程', '机械工程', '材料科学与工程']),
   },
   {
     id: 12,
@@ -166,6 +197,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(615),
     description: '北京师范大学是中国师范教育的最高学府，教育学、心理学全国第一。学校不仅培养优秀教师，也在基础学科和人文社会科学领域有很高造诣。',
     majors: ['教育学', '心理学', '汉语言文学', '数学与应用数学', '历史学'],
+    majorScores: getMajorScores(615, ['教育学', '心理学', '汉语言文学', '数学与应用数学', '历史学']),
   },
   {
     id: 13,
@@ -177,6 +209,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(605),
     description: '西安交通大学是西北地区的顶尖高校，工科实力雄厚，管理学科同样出色。学校治学严谨，学风朴实，为国家培养了大批工程技术人才。',
     majors: ['电气工程', '机械工程', '能源与动力工程', '管理学', '计算机科学与技术'],
+    majorScores: getMajorScores(605, ['电气工程', '机械工程', '能源与动力工程', '管理学', '计算机科学与技术']),
   },
   {
     id: 14,
@@ -188,6 +221,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(610),
     description: '哈尔滨工业大学被誉为"工程师的摇篮"，工科实力在全国名列前茅。学校在航天、机器人、焊接等领域有突出优势。',
     majors: ['航空航天工程', '机械工程', '焊接技术与工程', '计算机科学与技术', '土木工程'],
+    majorScores: getMajorScores(610, ['航空航天工程', '机械工程', '焊接技术与工程', '计算机科学与技术', '土木工程']),
   },
   {
     id: 15,
@@ -199,6 +233,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(598),
     description: '四川大学是西南地区的综合性重点大学，学科齐全。口腔医学全国第一，文理工医均有不俗实力。成都的美食和慢生活也很吸引人。',
     majors: ['口腔医学', '临床医学', '汉语言文学', '数学与应用数学', '材料科学与工程'],
+    majorScores: getMajorScores(598, ['口腔医学', '临床医学', '汉语言文学', '数学与应用数学', '材料科学与工程']),
   },
   {
     id: 16,
@@ -210,6 +245,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(590),
     description: '吉林大学是东北地区的综合性大学，学科齐全，体量庞大。学校在化学、法学、地质等学科有传统优势。',
     majors: ['化学', '法学', '地质工程', '车辆工程', '临床医学'],
+    majorScores: getMajorScores(590, ['化学', '法学', '地质工程', '车辆工程', '临床医学']),
   },
   {
     id: 17,
@@ -221,6 +257,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(595),
     description: '山东大学是一所历史悠久的综合性大学，文史见长，理工科也很有实力。学校学风朴实，学生踏实肯干。',
     majors: ['汉语言文学', '历史学', '数学与应用数学', '临床医学', '材料科学与工程'],
+    majorScores: getMajorScores(595, ['汉语言文学', '历史学', '数学与应用数学', '临床医学', '材料科学与工程']),
   },
   {
     id: 18,
@@ -232,6 +269,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(600),
     description: '北京邮电大学是信息科技领域的强校，被誉为"中国信息科技人才的摇篮"。通信工程、计算机等专业就业前景非常好，毕业生很多进入互联网大厂。',
     majors: ['通信工程', '计算机科学与技术', '电子信息工程', '软件工程', '信息安全'],
+    majorScores: getMajorScores(600, ['通信工程', '计算机科学与技术', '电子信息工程', '软件工程', '信息安全']),
   },
   {
     id: 19,
@@ -243,6 +281,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(608),
     description: '上海财经大学是中国顶尖的财经类院校，位于金融中心上海。会计学、金融学等专业实力强劲，毕业生就业质量高。',
     majors: ['会计学', '金融学', '经济学', '国际经济与贸易', '工商管理'],
+    majorScores: getMajorScores(608, ['会计学', '金融学', '经济学', '国际经济与贸易', '工商管理']),
   },
   {
     id: 20,
@@ -254,6 +293,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(592),
     description: '中国政法大学是中国法学教育的最高学府，法学学科全国第一。学校培养了大批法律人才，在司法系统享有盛誉。',
     majors: ['法学', '政治学与行政学', '社会学', '新闻学', '国际政治'],
+    majorScores: getMajorScores(592, ['法学', '政治学与行政学', '社会学', '新闻学', '国际政治']),
   },
   {
     id: 21,
@@ -265,6 +305,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(660),
     description: '北京协和医学院是中国医学教育的最高殿堂，与北京协和医院一体化办学。临床医学八年制专业培养医学精英，录取分数极高。',
     majors: ['临床医学', '护理学', '药学', '生物医学工程', '预防医学'],
+    majorScores: getMajorScores(660, ['临床医学', '护理学', '药学', '生物医学工程', '预防医学']),
   },
   {
     id: 22,
@@ -276,6 +317,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(598),
     description: '华东师范大学是上海的一所985师范大学，教育学、心理学实力强劲。地处上海，地理位置优越，就业机会多。',
     majors: ['教育学', '心理学', '汉语言文学', '数学与应用数学', '软件工程'],
+    majorScores: getMajorScores(598, ['教育学', '心理学', '汉语言文学', '数学与应用数学', '软件工程']),
   },
   {
     id: 23,
@@ -287,6 +329,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(580),
     description: '南京理工大学是国防七子之一，兵工学科全国领先。学校工科实力强，就业前景好，南京城市也很宜居。',
     majors: ['兵器科学与技术', '电子信息工程', '机械工程', '计算机科学与技术', '化学工程与工艺'],
+    majorScores: getMajorScores(580, ['兵器科学与技术', '电子信息工程', '机械工程', '计算机科学与技术', '化学工程与工艺']),
   },
   {
     id: 24,
@@ -298,6 +341,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(570),
     description: '武汉理工大学是由三所院校合并组建的，材料、交通、汽车等学科有优势。学校规模大，学生人数多，校园生活丰富。',
     majors: ['材料科学与工程', '船舶与海洋工程', '车辆工程', '机械工程', '土木工程'],
+    majorScores: getMajorScores(570, ['材料科学与工程', '船舶与海洋工程', '车辆工程', '机械工程', '土木工程']),
   },
   {
     id: 25,
@@ -309,6 +353,7 @@ export const schools: School[] = [
     provinceScores: getProvinceScores(555),
     description: '西南政法大学是新中国最早建立的政法类高等学府，法学实力雄厚，被誉为"新中国法学教育的西南联大"。',
     majors: ['法学', '侦查学', '行政管理', '新闻学', '经济学'],
+    majorScores: getMajorScores(555, ['法学', '侦查学', '行政管理', '新闻学', '经济学']),
   },
 ]
 

@@ -1,7 +1,9 @@
 <template>
-  <div class="min-h-screen pb-12">
-    <!-- 顶部导航 -->
-    <header class="bg-white shadow-sm sticky top-0 z-10">
+  <div class="min-h-screen pb-12 relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-purple-300/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
+
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-20 border-b border-white/50">
       <div class="container py-4 flex items-center">
         <button
           class="flex items-center text-gray-600 hover:text-primary-600 transition-colors"
@@ -10,17 +12,20 @@
           <span class="text-xl mr-1">←</span>
           <span>返回</span>
         </button>
-        <h1 class="text-xl font-bold text-center flex-1 mr-12">📊 分数找学校</h1>
+        <h1 class="text-xl font-bold text-center flex-1 mr-12">
+          <span class="text-gradient">📊 分数找学校</span>
+        </h1>
       </div>
     </header>
 
-    <main class="container py-8">
-      <!-- 输入区域 -->
-      <div class="card p-6 md:p-8 mb-8 animate-slide-up">
-        <h2 class="text-xl font-bold text-gray-800 mb-6">输入你的高考信息</h2>
+    <main class="container py-8 relative z-10">
+      <div class="card p-6 md:p-8 mb-8 animate-slide-up relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-ocean"></div>
+        <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+          <span>✏️</span> 输入你的高考信息
+        </h2>
 
         <div class="space-y-5">
-          <!-- 省份选择 -->
           <div>
             <label class="block text-gray-700 font-medium mb-2">
               所在省份 <span class="text-red-500">*</span>
@@ -35,21 +40,19 @@
             </select>
           </div>
 
-          <!-- 高考模式信息 -->
-          <div class="bg-primary-50 rounded-lg p-4">
+          <div class="bg-gradient-to-r from-primary-50 to-purple-50 rounded-xl p-4 border border-primary-100">
             <div class="flex items-center justify-between">
               <div>
                 <span class="text-sm text-gray-600">当前省份高考模式</span>
                 <div class="flex items-center mt-1">
-                  <span class="text-xl font-bold text-primary-600 mr-2">{{ currentProvinceGaokaoMode }}</span>
+                  <span class="text-xl font-bold text-gradient mr-2">{{ currentProvinceGaokaoMode }}</span>
                   <span class="text-sm text-gray-600">{{ currentProvinceGaokaoModeDesc }}</span>
                 </div>
               </div>
-              <span class="text-2xl">📝</span>
+              <span class="text-3xl animate-float">📝</span>
             </div>
           </div>
 
-          <!-- 分数输入 -->
           <div>
             <label class="block text-gray-700 font-medium mb-2">
               高考总分 <span class="text-red-500">*</span>
@@ -65,7 +68,6 @@
             <p class="text-sm text-gray-500 mt-1">满分 {{ currentProvinceMaxScore }} 分</p>
           </div>
 
-          <!-- 位次输入 -->
           <div>
             <label class="block text-gray-700 font-medium mb-2">
               全省位次 <span class="text-gray-400">（选填）</span>
@@ -77,12 +79,11 @@
               placeholder="请输入你的全省排名"
               min="1"
             />
-            <p class="text-sm text-gray-500 mt-1">位次比分数更准确，有条件建议填写</p>
+            <p class="text-sm text-gray-500 mt-1">💡 位次比分数更准确，有条件建议填写</p>
           </div>
 
-          <!-- 匹配按钮 -->
           <button
-            class="btn-primary w-full text-lg py-4"
+            class="btn-gradient-ocean w-full text-lg py-4"
             :disabled="!scoreInput || isLoading"
             :class="{ 'opacity-50 cursor-not-allowed': !scoreInput || isLoading }"
             @click="matchSchools"
@@ -92,14 +93,12 @@
         </div>
       </div>
 
-      <!-- 结果区域 -->
-      <div v-if="hasResult" class="space-y-8 animate-fade-in">
-        <!-- 冲刺档 -->
+      <div v-if="hasResult" class="space-y-10 animate-fade-in">
         <section v-if="matchResult.sprint.length > 0">
-          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+          <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center">
             <span class="text-2xl mr-2">🔥</span>
-            冲刺院校
-            <span class="text-sm font-normal text-gray-500 ml-2">
+            <span class="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">冲刺院校</span>
+            <span class="text-sm font-normal text-gray-500 ml-3">
               （分数接近，有希望冲上）
             </span>
           </h2>
@@ -108,16 +107,16 @@
               v-for="school in matchResult.sprint"
               :key="school.id"
               :school="school"
+              tier="sprint"
             />
           </div>
         </section>
 
-        <!-- 稳妥档 -->
         <section v-if="matchResult.safe.length > 0">
-          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+          <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center">
             <span class="text-2xl mr-2">✅</span>
-            稳妥院校
-            <span class="text-sm font-normal text-gray-500 ml-2">
+            <span class="bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">稳妥院校</span>
+            <span class="text-sm font-normal text-gray-500 ml-3">
               （大概率能上）
             </span>
           </h2>
@@ -126,16 +125,16 @@
               v-for="school in matchResult.safe"
               :key="school.id"
               :school="school"
+              tier="safe"
             />
           </div>
         </section>
 
-        <!-- 保底档 -->
         <section v-if="matchResult.guarantee.length > 0">
-          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+          <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center">
             <span class="text-2xl mr-2">🛡️</span>
-            保底院校
-            <span class="text-sm font-normal text-gray-500 ml-2">
+            <span class="bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">保底院校</span>
+            <span class="text-sm font-normal text-gray-500 ml-3">
               （肯定能上，用来兜底）
             </span>
           </h2>
@@ -144,17 +143,17 @@
               v-for="school in matchResult.guarantee"
               :key="school.id"
               :school="school"
+              tier="guarantee"
             />
           </div>
         </section>
       </div>
 
-      <!-- 无结果提示 -->
       <div
         v-else-if="searched && !hasResult"
         class="card p-12 text-center animate-fade-in"
       >
-        <div class="text-5xl mb-4">🤔</div>
+        <div class="text-5xl mb-4 animate-bounce-soft">🤔</div>
         <h3 class="text-xl font-bold text-gray-800 mb-2">暂无匹配的学校</h3>
         <p class="text-gray-600">请检查分数是否输入正确，或尝试其他分数</p>
       </div>

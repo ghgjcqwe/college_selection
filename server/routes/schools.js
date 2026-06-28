@@ -2,12 +2,41 @@ const express = require('express')
 const router = express.Router()
 const schools = require('../data/schools')
 
+function calculateProbability(scoreDifference) {
+  if (scoreDifference <= -40) {
+    return 95
+  } else if (scoreDifference <= -20) {
+    return 85
+  } else if (scoreDifference <= -10) {
+    return 70
+  } else if (scoreDifference <= 0) {
+    return 55
+  } else if (scoreDifference <= 5) {
+    return 35
+  } else if (scoreDifference <= 10) {
+    return 20
+  } else if (scoreDifference <= 15) {
+    return 10
+  } else if (scoreDifference <= 20) {
+    return 5
+  } else {
+    return 2
+  }
+}
+
+function getProbabilityLevel(probability) {
+  if (probability >= 80) return 'very-high'
+  if (probability >= 50) return 'high'
+  if (probability >= 20) return 'medium'
+  return 'low'
+}
+
 // 获取所有学校
 router.get('/', (req, res) => {
   res.json(schools)
 })
 
-// 根据分数和省份匹配学校
+// 根据分数和省份匹配学校（含概率分析）
 router.get('/match', (req, res) => {
   const { score, province } = req.query
   const userScore = parseInt(score)
@@ -28,30 +57,39 @@ router.get('/match', (req, res) => {
         : school.minScore
     const diff = schoolScore - userScore
 
+    const probability = calculateProbability(diff)
+    const level = getProbabilityLevel(probability)
+
     if (diff >= 0 && diff <= 20) {
-      sprint.push(school)
+      sprint.push({
+        school,
+        tier: 'sprint',
+        probability,
+        probabilityLevel: level,
+        scoreDifference: diff
+      })
     } else if (diff < 0 && Math.abs(diff) <= 30) {
-      safe.push(school)
+      safe.push({
+        school,
+        tier: 'safe',
+        probability,
+        probabilityLevel: level,
+        scoreDifference: diff
+      })
     } else if (diff < -30) {
-      guarantee.push(school)
+      guarantee.push({
+        school,
+        tier: 'guarantee',
+        probability,
+        probabilityLevel: level,
+        scoreDifference: diff
+      })
     }
   })
 
-  sprint.sort((a, b) => {
-    const sa = a.provinceScores?.[provinceCode] || a.minScore
-    const sb = b.provinceScores?.[provinceCode] || b.minScore
-    return sa - sb
-  })
-  safe.sort((a, b) => {
-    const sa = a.provinceScores?.[provinceCode] || a.minScore
-    const sb = b.provinceScores?.[provinceCode] || b.minScore
-    return sb - sa
-  })
-  guarantee.sort((a, b) => {
-    const sa = a.provinceScores?.[provinceCode] || a.minScore
-    const sb = b.provinceScores?.[provinceCode] || b.minScore
-    return sb - sa
-  })
+  sprint.sort((a, b) => a.probability - b.probability)
+  safe.sort((a, b) => b.probability - a.probability)
+  guarantee.sort((a, b) => b.probability - a.probability)
 
   res.json({
     sprint: sprint.slice(0, 8),

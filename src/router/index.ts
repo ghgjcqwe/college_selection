@@ -39,6 +39,11 @@ const routes = [
     component: () => import('@/views/QuizResult.vue'),
   },
   {
+    path: '/volunteer-plan',
+    name: 'volunteer-plan',
+    component: () => import('@/views/VolunteerPlan.vue'),
+  },
+  {
     path: '/ai-chat',
     name: 'ai-chat',
     component: () => import('@/views/AIChat.vue'),
