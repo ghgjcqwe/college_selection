@@ -22,18 +22,18 @@
       <div class="card p-8 text-center max-w-md w-full relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-purple"></div>
         <div class="text-6xl mb-4 animate-bounce-soft">🔑</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">需要配置 API Key</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">AI 服务暂不可用</h2>
         <p class="text-gray-600 mb-2">
           {{ configHintMessage }}
         </p>
         <p class="text-sm text-gray-500 mb-6">
-          支持硅基流动、DeepSeek 等平台的 API Key
+          请检查后端服务是否已启动，或联系管理员配置 API Key
         </p>
         <button
           class="btn-gradient-purple px-8"
           @click="goToSettings"
         >
-          前往配置
+          前往设置
         </button>
       </div>
     </div>
@@ -138,7 +138,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getApiKey, getApiProvider } from '@/utils/apiKeyManager'
+import { getApiProvider } from '@/utils/apiKeyManager'
 
 const router = useRouter()
 
@@ -148,7 +148,7 @@ const inputMessage = ref('')
 const isLoading = ref(false)
 const conversationId = ref(`user_${Date.now()}`)
 const showConfigHint = ref(false)
-const configHintMessage = ref('默认API Key已失效，请配置你自己的API Key')
+const configHintMessage = ref('后端 AI 服务暂未配置 API Key，请联系管理员在 server/.env 中配置')
 
 // 快捷问题建议
 const suggestions = [
@@ -164,7 +164,7 @@ const suggestions = [
 
 /**
  * 发送消息
- * 优先使用用户配置的API Key，如果没有则使用后端默认的
+ * 使用后端配置的 API Key，前端不接触密钥，更安全
  */
 async function sendMessage(text?: string) {
   const messageText = text || inputMessage.value.trim()
@@ -185,9 +185,6 @@ async function sendMessage(text?: string) {
   isLoading.value = true
 
   try {
-    // 获取用户配置的API Key（如果有）
-    const userApiKey = getApiKey()
-
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
@@ -196,7 +193,6 @@ async function sendMessage(text?: string) {
       body: JSON.stringify({
         message: messageText,
         conversationId: conversationId.value,
-        apiKey: userApiKey || undefined,
         provider: getApiProvider(),
         userInfo: {
           timestamp: new Date().toISOString()
