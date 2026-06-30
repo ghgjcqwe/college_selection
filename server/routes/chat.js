@@ -4,6 +4,10 @@ const router = express.Router()
 
 // API 配置
 const API_CONFIG = {
+  agnes: {
+    url: 'https://apihub.agnes-ai.com/v1/chat/completions',
+    model: 'agnes-2.0-flash'
+  },
   deepseek: {
     url: 'https://api.deepseek.com/chat/completions',
     model: 'deepseek-chat'
@@ -16,6 +20,7 @@ const API_CONFIG = {
 
 // 默认 API Key（请在此处配置你的默认 API Key）
 const DEFAULT_API_KEY = {
+  agnes: process.env.AGNES_API_KEY || 'sk-BTFRhpfTgA3O8AUa7J5MJGxVpX7BCNn2GLg2g7gq5YHUyICW',
   deepseek: process.env.DEEPSEEK_API_KEY || '',
   siliconflow: process.env.SILICONFLOW_API_KEY || ''
 }
@@ -47,7 +52,7 @@ const conversations = new Map()
  * 发送消息给大模型
  */
 router.post('/', async (req, res) => {
-  const { message, conversationId = 'default', apiKey, provider = 'deepseek', userInfo = {} } = req.body
+  const { message, conversationId = 'default', apiKey, provider = 'agnes', userInfo = {} } = req.body
 
   if (!message) {
     return res.status(400).json({ error: '请提供消息内容' })
@@ -64,9 +69,14 @@ router.post('/', async (req, res) => {
 
   // 如果没有配置 API Key，返回提示
   if (!effectiveApiKey) {
+    const providerNames = {
+      agnes: 'Agnes',
+      deepseek: 'DeepSeek',
+      siliconflow: '硅基流动'
+    }
     return res.status(503).json({
       error: 'AI服务未配置',
-      message: `请在设置页面配置 ${provider === 'deepseek' ? 'DeepSeek' : '硅基流动'} API Key`,
+      message: `请在设置页面配置 ${providerNames[provider] || provider} API Key`,
       hint: '访问 /settings 页面进行配置',
       needConfig: true
     })
@@ -121,10 +131,11 @@ router.post('/', async (req, res) => {
     })
   } catch (error) {
     console.error('AI对话错误:', error.message)
-    const errorMessage = error.response?.data?.error?.message || error.message
+    console.error('完整错误:', JSON.stringify(error.response?.data || error, null, 2))
+    const errorMessage = error.response?.data?.error?.message || error.response?.data?.message || error.message || '未知错误'
     
     // 如果是认证错误，提示用户配置自己的 API Key
-    if (errorMessage.includes('Authentication') || errorMessage.includes('api key') || errorMessage.includes('invalid')) {
+    if (errorMessage.includes('Authentication') || errorMessage.includes('api key') || errorMessage.includes('invalid') || errorMessage.includes('Unauthorized')) {
       return res.status(401).json({
         error: 'API Key无效',
         message: '默认API Key已失效，请配置你自己的API Key',
@@ -135,7 +146,8 @@ router.post('/', async (req, res) => {
     
     res.status(500).json({
       error: 'AI服务调用失败',
-      message: errorMessage
+      message: errorMessage,
+      provider: provider
     })
   }
 })

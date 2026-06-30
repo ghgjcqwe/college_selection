@@ -6,7 +6,7 @@
 const API_KEY_STORAGE_KEY = 'ai_api_key'
 const API_PROVIDER_STORAGE_KEY = 'ai_api_provider'
 
-export type ApiProvider = 'deepseek' | 'siliconflow'
+export type ApiProvider = 'agnes' | 'deepseek' | 'siliconflow'
 
 /**
  * 获取保存的API Key
@@ -42,7 +42,7 @@ export function hasApiKey(): boolean {
  */
 export function getApiProvider(): ApiProvider {
   const provider = localStorage.getItem(API_PROVIDER_STORAGE_KEY) as ApiProvider
-  return provider || 'deepseek'
+  return provider || 'agnes'
 }
 
 /**

@@ -51,6 +51,7 @@
               v-model="providerInput"
               class="input-field w-full"
             >
+              <option value="agnes">Agnes (默认)</option>
               <option value="deepseek">DeepSeek</option>
               <option value="siliconflow">硅基流动</option>
             </select>
@@ -98,14 +99,24 @@
           </h3>
           <div class="text-sm text-blue-600 space-y-3">
             <div class="p-3 bg-white/60 rounded-lg backdrop-blur-sm">
-              <p class="font-medium mb-2 text-purple-700">🌟 硅基流动（推荐）</p>
+              <p class="font-medium mb-2 text-green-700">🌟 Agnes 平台（默认已配置）</p>
+              <p class="text-xs mb-2 text-green-600">✅ 系统已内置 Agnes-2.0-Flash 模型，免费使用，无需配置</p>
+              <ol class="list-decimal list-inside space-y-1">
+                <li>如需使用自己的密钥，访问 <a href="https://agnes.ai/" target="_blank" class="underline hover:text-green-600">Agnes 平台</a></li>
+                <li>注册/登录账号</li>
+                <li>进入"API密钥"页面创建密钥</li>
+                <li>复制生成的Key并粘贴到上方输入框</li>
+              </ol>
+            </div>
+            <div class="p-3 bg-white/60 rounded-lg backdrop-blur-sm">
+              <p class="font-medium mb-2 text-purple-700">硅基流动</p>
               <ol class="list-decimal list-inside space-y-1">
                 <li>访问 <a href="https://siliconflow.cn/" target="_blank" class="underline hover:text-purple-600">硅基流动官网</a></li>
                 <li>注册/登录账号</li>
                 <li>进入"API密钥"页面创建密钥</li>
                 <li>复制生成的Key并粘贴到上方输入框</li>
               </ol>
-              <p class="text-xs mt-2 text-purple-600">💡 新用户有免费额度，支持DeepSeek等多种模型</p>
+              <p class="text-xs mt-2 text-purple-600">💡 新用户有免费额度，支持多种模型</p>
             </div>
             <div class="p-3 bg-white/60 rounded-lg backdrop-blur-sm">
               <p class="font-medium mb-2 text-blue-700">DeepSeek 官方</p>
@@ -144,7 +155,7 @@ import { getApiKey, saveApiKey as saveKey, clearApiKey as clearKey, hasApiKey as
 const router = useRouter()
 
 const apiKeyInput = ref('')
-const providerInput = ref<'deepseek' | 'siliconflow'>('deepseek')
+const providerInput = ref<'agnes' | 'deepseek' | 'siliconflow'>('agnes')
 const showKey = ref(false)
 const currentKey = ref('')
 
