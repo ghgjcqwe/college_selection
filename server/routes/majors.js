@@ -1,20 +1,29 @@
 const express = require('express')
 const router = express.Router()
-const majors = require('../data/majors')
+const { getMajors } = require('../db/queries')
 
-// 获取所有专业
-router.get('/', (req, res) => {
-  res.json(majors)
+router.get('/', async (req, res) => {
+  try {
+    const majors = await getMajors()
+    res.json(majors)
+  } catch (error) {
+    res.status(500).json({ error: '获取专业列表失败' })
+  }
 })
 
-// 根据 ID 获取专业详情
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const id = parseInt(req.params.id)
-  const major = majors.find((m) => m.id === id)
-  if (!major) {
-    return res.status(404).json({ error: '专业未找到' })
+  
+  try {
+    const majors = await getMajors()
+    const major = majors.find((m) => m.id === id)
+    if (!major) {
+      return res.status(404).json({ error: '专业未找到' })
+    }
+    res.json(major)
+  } catch (error) {
+    res.status(500).json({ error: '获取专业列表失败' })
   }
-  res.json(major)
 })
 
 module.exports = router

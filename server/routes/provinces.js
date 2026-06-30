@@ -1,10 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const provinces = require('../data/provinces')
+const { getProvinces } = require('../db/queries')
 
-// 获取所有省份
-router.get('/', (req, res) => {
-  res.json(provinces)
+router.get('/', async (req, res) => {
+  try {
+    const provinces = await getProvinces()
+    res.json(provinces)
+  } catch (error) {
+    res.status(500).json({ error: '获取省份列表失败' })
+  }
 })
 
 module.exports = router

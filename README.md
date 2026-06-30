@@ -6,52 +6,6 @@
 
 ---
 
-## 📸 界面预览
-
-### 首页
-![首页](https://via.placeholder.com/800x450/667eea/ffffff?text=🏠+首页+-+4大功能入口)
-
-首页展示四个核心功能入口卡片：**分数找学校**、**专业怎么选**、**AI志愿助手**、**志愿填报模拟**，每个卡片带有渐变色和悬浮动画效果。
-
-### 分数找学校
-![分数找学校](https://via.placeholder.com/800x450/4facfe/ffffff?text=📊+分数找学校+-+输入分数匹配院校)
-
-选择省份、输入高考分数（可选填位次），系统自动将学校分为 **冲刺 🔥**、**稳妥 ✅**、**保底 🛡️** 三档，每所学校显示录取概率和分数差距。
-
-### 学校详情
-![学校详情](https://via.placeholder.com/800x450/764ba2/ffffff?text=🏫+学校详情+-+专业录取分析)
-
-查看学校基本信息、简介、各省录取分数线，以及各专业的录取概率分析（含进度条和颜色标识）。
-
-### 专业浏览与兴趣测试
-![专业浏览](https://via.placeholder.com/800x450/f093fb/ffffff?text=🎯+专业浏览+-+8大学科分类)
-
-8 大学科门类（工学、医学、文学、经济学、管理学、教育学、理学、法学）分类浏览 25 个专业。顶部提供兴趣测试入口。
-
-### 兴趣测试
-![兴趣测试](https://via.placeholder.com/800x450/fa709a/ffffff?text=📝+兴趣测试+-+8道题发现适合专业)
-
-8 道选择题，逐题作答，实时显示进度。完成后根据兴趣标签匹配推荐专业。
-
-### AI 志愿助手
-![AI志愿助手](https://via.placeholder.com/800x450/8e2de2/ffffff?text=🤖+AI志愿助手+-+智能问答)
-
-集成 DeepSeek / 硅基流动大模型，解答志愿填报相关问题。支持对话历史管理。
-
-### 志愿填报模拟
-![志愿填报模拟](https://via.placeholder.com/800x450/11998e/ffffff?text=📝+志愿填报模拟+-+智能生成方案)
-
-智能生成志愿方案，支持手动调整学校顺序，实时分析梯度分布和方案风险评估。
-
-### 设置页面
-![设置](https://via.placeholder.com/800x450/667eea/ffffff?text=⚙️+设置+-+API+Key配置)
-
-配置 AI 助手的 API Key（支持 DeepSeek / 硅基流动），Key 安全存储在后端服务器。
-
-> 📌 完整设计稿可查看 [`docs/mockups/new-features-design.html`](docs/mockups/new-features-design.html)
-
----
-
 ## ✨ 核心功能
 
 | 功能模块 | 说明 |

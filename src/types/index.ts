@@ -4,6 +4,16 @@ export interface MajorScore {
   minScore: number
 }
 
+// 历年分数线
+export interface HistoricalScore {
+  year: number
+  minScore: number
+  maxScore: number
+  avgScore: number
+  rank?: number
+  enrollment?: number
+}
+
 // 学校类型定义
 export interface School {
   id: number
@@ -16,6 +26,7 @@ export interface School {
   description: string
   majors: string[]
   majorScores?: MajorScore[]
+  historicalScores?: HistoricalScore[]
 }
 
 // 省份类型定义

@@ -168,7 +168,7 @@
         </div>
 
         <!-- 特色专业 -->
-        <div class="card p-6 md:p-8">
+        <div class="card p-6 md:p-8 mb-6">
           <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
             <span class="text-xl mr-2">⭐</span>
             特色专业
@@ -182,6 +182,123 @@
               {{ major }}
             </span>
           </div>
+        </div>
+
+        <!-- 历年分数线 -->
+        <div class="card p-6 md:p-8">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <span class="text-xl mr-2">📈</span>
+            历年分数线
+          </h2>
+          
+          <div v-if="school.historicalScores && school.historicalScores.length > 0">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-gray-50 border-b">
+                    <th class="px-4 py-3 text-left font-semibold text-gray-700">年份</th>
+                    <th class="px-4 py-3 text-center font-semibold text-gray-700">最低分</th>
+                    <th class="px-4 py-3 text-center font-semibold text-gray-700">最高分</th>
+                    <th class="px-4 py-3 text-center font-semibold text-gray-700">平均分</th>
+                    <th class="px-4 py-3 text-center font-semibold text-gray-700">省排名</th>
+                    <th class="px-4 py-3 text-center font-semibold text-gray-700">招生人数</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr 
+                    v-for="score in school.historicalScores" 
+                    :key="score.year"
+                    class="border-b hover:bg-gray-50 transition-colors"
+                  >
+                    <td class="px-4 py-3 font-medium text-gray-800">{{ score.year }}</td>
+                    <td class="px-4 py-3 text-center text-gray-700">{{ score.minScore }}</td>
+                    <td class="px-4 py-3 text-center text-gray-700">{{ score.maxScore }}</td>
+                    <td class="px-4 py-3 text-center font-semibold text-primary-600">{{ score.avgScore }}</td>
+                    <td class="px-4 py-3 text-center text-gray-700">{{ score.rank?.toLocaleString() || '-' }}</td>
+                    <td class="px-4 py-3 text-center text-gray-700">{{ score.enrollment || '-' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- 分数线趋势图 -->
+            <div class="mt-6">
+              <h3 class="text-sm font-semibold text-gray-700 mb-3">分数线趋势</h3>
+              <div class="bg-gray-50 rounded-lg p-4">
+                <svg viewBox="0 0 500 120" class="w-full h-32">
+                  <defs>
+                    <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.3" />
+                      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0" />
+                    </linearGradient>
+                  </defs>
+                  
+                  <line x1="30" y1="10" x2="30" y2="110" stroke="#e5e7eb" stroke-width="1" />
+                  <line x1="30" y1="110" x2="490" y2="110" stroke="#e5e7eb" stroke-width="1" />
+                  
+                  <line x1="30" y1="30" x2="490" y2="30" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="4" />
+                  <line x1="30" y1="50" x2="490" y2="50" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="4" />
+                  <line x1="30" y1="70" x2="490" y2="70" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="4" />
+                  <line x1="30" y1="90" x2="490" y2="90" stroke="#f3f4f6" stroke-width="1" stroke-dasharray="4" />
+                  
+                  <path
+                    :d="areaPath"
+                    fill="url(#scoreGradient)"
+                  />
+                  
+                  <path
+                    :d="linePath"
+                    fill="none"
+                    stroke="#6366f1"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  
+                  <g v-for="(score, index) in school.historicalScores" :key="score.year">
+                    <circle
+                      :cx="getPointX(index)"
+                      :cy="getPointY(score.avgScore)"
+                      r="5"
+                      fill="white"
+                      stroke="#6366f1"
+                      stroke-width="3"
+                      class="transition-all duration-200 hover:r-7 cursor-pointer"
+                    />
+                    <circle
+                      :cx="getPointX(index)"
+                      :cy="getPointY(score.avgScore)"
+                      r="3"
+                      fill="#6366f1"
+                      class="transition-all duration-200"
+                    />
+                    <text
+                      :x="getPointX(index)"
+                      y="118"
+                      text-anchor="middle"
+                      fill="#6b7280"
+                      font-size="10"
+                    >{{ score.year }}</text>
+                  </g>
+                  
+                  <text x="15" y="25" text-anchor="middle" fill="#9ca3af" font-size="10">{{ maxScore }}</text>
+                  <text x="15" y="45" text-anchor="middle" fill="#9ca3af" font-size="10">{{ Math.round((maxScore + minScore) / 2) }}</text>
+                  <text x="15" y="65" text-anchor="middle" fill="#9ca3af" font-size="10">{{ Math.round((maxScore + minScore) / 2 - (maxScore - minScore) / 4) }}</text>
+                  <text x="15" y="85" text-anchor="middle" fill="#9ca3af" font-size="10">{{ Math.round((maxScore + minScore) / 2 - (maxScore - minScore) / 2) }}</text>
+                  <text x="15" y="105" text-anchor="middle" fill="#9ca3af" font-size="10">{{ minScore }}</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div v-else class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-2">📊</div>
+            <p>暂无历年分数线信息</p>
+          </div>
+
+          <p class="text-sm text-gray-500 mt-4">
+            💡 提示：历年分数线仅供参考，当年录取分数受考题难度、考生人数等因素影响
+          </p>
         </div>
       </div>
 
@@ -365,4 +482,118 @@ function getMajorProgressClass(majorMinScore: number): string {
   if (diff >= -15) return 'bg-gradient-to-r from-orange-400 to-orange-600'
   return 'bg-gradient-to-r from-red-400 to-red-600'
 }
+
+/**
+ * 获取历年分数线柱状图样式类
+ */
+function getHistoricalBarClass(index: number): string {
+  const classes = [
+    'bg-gradient-to-t from-primary-500 to-primary-400',
+    'bg-gradient-to-t from-blue-500 to-blue-400',
+    'bg-gradient-to-t from-purple-500 to-purple-400',
+    'bg-gradient-to-t from-secondary-500 to-secondary-400'
+  ]
+  return classes[index % classes.length]
+}
+
+/**
+ * 获取历年分数线柱状图高度
+ */
+function getHistoricalBarHeight(avgScore: number): number {
+  const scores = school.value?.historicalScores?.map(s => s.avgScore) || []
+  const min = Math.min(...scores) - 20
+  const max = Math.max(...scores) + 20
+  const range = max - min || 100
+  return ((avgScore - min) / range) * 100
+}
+
+/**
+ * 获取分数最小值
+ */
+const minScore = computed(() => {
+  const scores = school.value?.historicalScores?.map(s => s.avgScore) || []
+  return Math.min(...scores) - 20
+})
+
+/**
+ * 获取分数最大值
+ */
+const maxScore = computed(() => {
+  const scores = school.value?.historicalScores?.map(s => s.avgScore) || []
+  return Math.max(...scores) + 20
+})
+
+/**
+ * 获取X坐标
+ */
+function getPointX(index: number): number {
+  const count = school.value?.historicalScores?.length || 1
+  const totalWidth = 460
+  const padding = 30
+  return padding + (index * totalWidth) / (count - 1)
+}
+
+/**
+ * 获取Y坐标
+ */
+function getPointY(score: number): number {
+  const range = maxScore.value - minScore.value || 100
+  const chartHeight = 100
+  return 110 - ((score - minScore.value) / range) * chartHeight
+}
+
+/**
+ * 获取折线路径
+ */
+const linePath = computed(() => {
+  const scores = school.value?.historicalScores || []
+  if (scores.length === 0) return ''
+  
+  let path = `M ${getPointX(0)} ${getPointY(scores[0].avgScore)}`
+  
+  for (let i = 1; i < scores.length; i++) {
+    const prevX = getPointX(i - 1)
+    const prevY = getPointY(scores[i - 1].avgScore)
+    const currX = getPointX(i)
+    const currY = getPointY(scores[i].avgScore)
+    
+    const cpx1 = prevX + (currX - prevX) / 3
+    const cpy1 = prevY
+    const cpx2 = currX - (currX - prevX) / 3
+    const cpy2 = currY
+    
+    path += ` C ${cpx1} ${cpy1}, ${cpx2} ${cpy2}, ${currX} ${currY}`
+  }
+  
+  return path
+})
+
+/**
+ * 获取面积路径
+ */
+const areaPath = computed(() => {
+  const scores = school.value?.historicalScores || []
+  if (scores.length === 0) return ''
+  
+  let path = `M ${getPointX(0)} 110`
+  path += ` L ${getPointX(0)} ${getPointY(scores[0].avgScore)}`
+  
+  for (let i = 1; i < scores.length; i++) {
+    const prevX = getPointX(i - 1)
+    const prevY = getPointY(scores[i - 1].avgScore)
+    const currX = getPointX(i)
+    const currY = getPointY(scores[i].avgScore)
+    
+    const cpx1 = prevX + (currX - prevX) / 3
+    const cpy1 = prevY
+    const cpx2 = currX - (currX - prevX) / 3
+    const cpy2 = currY
+    
+    path += ` C ${cpx1} ${cpy1}, ${cpx2} ${cpy2}, ${currX} ${currY}`
+  }
+  
+  path += ` L ${getPointX(scores.length - 1)} 110 Z`
+  
+  return path
+})
 </script>
