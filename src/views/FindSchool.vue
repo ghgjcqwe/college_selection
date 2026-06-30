@@ -1,9 +1,11 @@
 <template>
-  <div class="min-h-screen pb-12 relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3"></div>
-    <div class="absolute bottom-0 left-0 w-80 h-80 bg-purple-300/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
+  <div class="min-h-screen pb-12 relative overflow-hidden bg-gradient-bg">
+    <!-- 背景装饰 -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-primary-200/20 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-safety-200/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3"></div>
 
-    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-20 border-b border-white/50">
+    <!-- 毛玻璃导航栏 -->
+    <header class="glass-nav sticky top-0 z-20">
       <div class="container py-4 flex items-center">
         <button
           class="flex items-center text-gray-600 hover:text-primary-600 transition-colors"
@@ -19,13 +21,15 @@
     </header>
 
     <main class="container py-8 relative z-10">
-      <div class="card p-6 md:p-8 mb-8 animate-slide-up relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-ocean"></div>
+      <!-- 输入表单卡片 -->
+      <div class="card p-6 md:p-8 mb-8 animate-fade-in-up relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-primary"></div>
         <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
           <span>✏️</span> 输入你的高考信息
         </h2>
 
         <div class="space-y-5">
+          <!-- 省份选择 -->
           <div>
             <label class="block text-gray-700 font-medium mb-2">
               所在省份 <span class="text-red-500">*</span>
@@ -40,12 +44,13 @@
             </select>
           </div>
 
-          <div class="bg-gradient-to-r from-primary-50 to-purple-50 rounded-xl p-4 border border-primary-100">
+          <!-- 高考模式提示 -->
+          <div class="bg-gradient-to-r from-primary-50 to-primary-100/50 rounded-xl p-4 border border-primary-200/50">
             <div class="flex items-center justify-between">
               <div>
                 <span class="text-sm text-gray-600">当前省份高考模式</span>
                 <div class="flex items-center mt-1">
-                  <span class="text-xl font-bold text-gradient mr-2">{{ currentProvinceGaokaoMode }}</span>
+                  <span class="text-xl font-bold text-primary-600 mr-2">{{ currentProvinceGaokaoMode }}</span>
                   <span class="text-sm text-gray-600">{{ currentProvinceGaokaoModeDesc }}</span>
                 </div>
               </div>
@@ -53,6 +58,7 @@
             </div>
           </div>
 
+          <!-- 分数输入 -->
           <div>
             <label class="block text-gray-700 font-medium mb-2">
               高考总分 <span class="text-red-500">*</span>
@@ -68,6 +74,7 @@
             <p class="text-sm text-gray-500 mt-1">满分 {{ currentProvinceMaxScore }} 分</p>
           </div>
 
+          <!-- 位次输入 -->
           <div>
             <label class="block text-gray-700 font-medium mb-2">
               全省位次 <span class="text-gray-400">（选填）</span>
@@ -82,8 +89,9 @@
             <p class="text-sm text-gray-500 mt-1">💡 位次比分数更准确，有条件建议填写</p>
           </div>
 
+          <!-- 匹配按钮 -->
           <button
-            class="btn-gradient-ocean w-full text-lg py-4"
+            class="btn-primary w-full text-lg py-4"
             :disabled="!scoreInput || isLoading"
             :class="{ 'opacity-50 cursor-not-allowed': !scoreInput || isLoading }"
             @click="matchSchools"
@@ -93,16 +101,17 @@
         </div>
       </div>
 
+      <!-- 结果展示 -->
       <div v-if="hasResult" class="space-y-10 animate-fade-in">
+        <!-- 冲刺院校 -->
         <section v-if="matchResult.sprint.length > 0">
           <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center">
-            <span class="text-2xl mr-2">🔥</span>
-            <span class="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">冲刺院校</span>
+            <span class="tag-sprint text-base px-4 py-1.5">冲刺</span>
             <span class="text-sm font-normal text-gray-500 ml-3">
-              （分数接近，有希望冲上）
+              分数接近，有希望冲上
             </span>
           </h2>
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 animate-list-fade-in">
             <SchoolCard
               v-for="school in matchResult.sprint"
               :key="school.id"
@@ -112,15 +121,15 @@
           </div>
         </section>
 
+        <!-- 稳妥院校 -->
         <section v-if="matchResult.safe.length > 0">
           <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center">
-            <span class="text-2xl mr-2">✅</span>
-            <span class="bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">稳妥院校</span>
+            <span class="tag-stable text-base px-4 py-1.5">稳妥</span>
             <span class="text-sm font-normal text-gray-500 ml-3">
-              （大概率能上）
+              大概率能上
             </span>
           </h2>
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 animate-list-fade-in">
             <SchoolCard
               v-for="school in matchResult.safe"
               :key="school.id"
@@ -130,15 +139,15 @@
           </div>
         </section>
 
+        <!-- 保底院校 -->
         <section v-if="matchResult.guarantee.length > 0">
           <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center">
-            <span class="text-2xl mr-2">🛡️</span>
-            <span class="bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">保底院校</span>
+            <span class="tag-safety text-base px-4 py-1.5">保底</span>
             <span class="text-sm font-normal text-gray-500 ml-3">
-              （肯定能上，用来兜底）
+              肯定能上，用来兜底
             </span>
           </h2>
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 animate-list-fade-in">
             <SchoolCard
               v-for="school in matchResult.guarantee"
               :key="school.id"
@@ -149,6 +158,7 @@
         </section>
       </div>
 
+      <!-- 无结果提示 -->
       <div
         v-else-if="searched && !hasResult"
         class="card p-12 text-center animate-fade-in"

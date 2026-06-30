@@ -102,7 +102,7 @@
 
         <div class="ai-chat-footer">
           <p class="ai-footer-text">
-            {{ isUsingBuiltin ? '💡 使用内置问答模式' : '🔑 使用配置的API' }}
+            {{ isUsingBuiltin ? '💡 使用内置问答模式' : '🤖 使用AI大模型' }}
           </p>
         </div>
       </div>
@@ -122,7 +122,7 @@ const hasUnread = ref(false)
 const chatContainer = ref<HTMLElement | null>(null)
 
 const isUsingBuiltin = computed(() => {
-  return !hasApiKey()
+  return false
 })
 
 const suggestions = [
@@ -528,25 +528,25 @@ function formatMessage(text: string): string {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(142, 45, 226, 0.4);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
 }
 
 .ai-toggle-btn:hover {
   transform: scale(1.1);
-  box-shadow: 0 12px 32px rgba(142, 45, 226, 0.5);
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.5);
 }
 
 .ai-toggle-btn.is-expanded {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .ai-icon {
@@ -645,12 +645,12 @@ function formatMessage(text: string): string {
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  box-shadow: 0 4px 12px rgba(142, 45, 226, 0.3);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .ai-info {
@@ -804,11 +804,11 @@ function formatMessage(text: string): string {
 }
 
 .ai-assistant-message .ai-message-avatar {
-  background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
 }
 
 .ai-user-message .ai-message-avatar {
-  background: linear-gradient(135deg, #667eea 0%, #00d4ff 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
 }
 
 .ai-message-bubble {
@@ -823,7 +823,7 @@ function formatMessage(text: string): string {
 }
 
 .ai-user-bubble {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   border: none;
   color: white;
 }

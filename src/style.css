@@ -18,7 +18,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 50%, #faf5ff 100%);
+  background: #f8fafc;
   background-attachment: fixed;
 }
 
@@ -26,6 +26,7 @@ body {
   min-height: 100vh;
 }
 
+/* 页面加载渐入动画 */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -35,10 +36,10 @@ body {
   }
 }
 
-@keyframes slideUp {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -46,99 +47,143 @@ body {
   }
 }
 
+/* 收藏按钮弹跳反馈 */
+@keyframes bounceFavorite {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  75% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 @layer components {
+  /* 毛玻璃卡片 */
   .card {
-    @apply bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl 
-           transition-all duration-300 border border-white/50;
+    @apply bg-white/80 backdrop-blur-md rounded-2xl shadow-glass
+           border border-white/30 hover:shadow-card-hover
+           transition-all duration-300;
   }
 
-  .card-gradient {
-    @apply rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300
-           bg-gradient-to-br from-white/90 to-white/70 backdrop-blur-sm
-           border border-white/50;
+  /* 毛玻璃导航栏 */
+  .glass-nav {
+    @apply bg-white/70 backdrop-blur-lg border-b border-gray-200/30
+           shadow-glass-sm;
   }
 
+  /* 主要按钮 */
   .btn-primary {
-    @apply bg-gradient-primary text-white font-medium rounded-xl
+    @apply bg-gradient-primary text-white font-semibold rounded-xl
            px-6 py-3 shadow-lg hover:shadow-xl hover:-translate-y-0.5
            active:translate-y-0 transition-all duration-200 cursor-pointer;
-    background-size: 200% 200%;
-    background-position: 0% 50%;
-    transition: all 0.3s ease;
   }
 
-  .btn-primary:hover {
-    background-position: 100% 50%;
-  }
-
+  /* 辅助按钮 */
   .btn-secondary {
-    @apply bg-white/80 text-primary-600 font-medium rounded-xl
+    @apply bg-white/80 text-primary-600 font-semibold rounded-xl
            px-6 py-3 border-2 border-primary-200 backdrop-blur-sm
-           hover:border-primary-400 hover:bg-primary-50/80 hover:shadow-md
+           hover:border-primary-500 hover:bg-primary-50/80 hover:shadow-md
            transition-all duration-200 cursor-pointer;
   }
 
-  .btn-gradient-purple {
-    @apply text-white font-medium rounded-xl px-6 py-3
-           shadow-lg hover:shadow-xl hover:-translate-y-0.5
-           active:translate-y-0 transition-all duration-200 cursor-pointer;
-    background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
-  }
-
-  .btn-gradient-pink {
-    @apply text-white font-medium rounded-xl px-6 py-3
-           shadow-lg hover:shadow-xl hover:-translate-y-0.5
-           active:translate-y-0 transition-all duration-200 cursor-pointer;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  }
-
-  .btn-gradient-ocean {
-    @apply text-white font-medium rounded-xl px-6 py-3
-           shadow-lg hover:shadow-xl hover:-translate-y-0.5
-           active:translate-y-0 transition-all duration-200 cursor-pointer;
-    background: linear-gradient(135deg, #667eea 0%, #00d4ff 100%);
-  }
-
+  /* 输入框 */
   .input-field {
     @apply w-full px-4 py-3 text-lg border-2 border-gray-200 rounded-xl
-           focus:border-primary-400 focus:ring-4 focus:ring-primary-100
+           focus:border-primary-500 focus:ring-4 focus:ring-primary-100
            focus:shadow-md outline-none transition-all duration-200
-           bg-white/80 backdrop-blur-sm;
+           bg-white/90 backdrop-blur-sm;
   }
 
-  .tag {
-    @apply inline-block px-3 py-1 text-sm font-medium rounded-full;
+  /* 冲刺标签 */
+  .tag-sprint {
+    @apply inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full
+           bg-sprint-100 text-sprint-600 border border-sprint-200;
   }
 
-  .tag-gradient {
-    @apply inline-block px-3 py-1 text-sm font-medium rounded-full
-           text-white shadow-sm;
+  /* 稳妥标签 */
+  .tag-stable {
+    @apply inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full
+           bg-primary-100 text-primary-600 border border-primary-200;
   }
 
+  /* 保底标签 */
+  .tag-safety {
+    @apply inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full
+           bg-safety-100 text-safety-600 border border-safety-200;
+  }
+
+  /* 概率等级标签 */
+  .tag-probability-high {
+    @apply inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full
+           bg-safety-500 text-white;
+  }
+
+  .tag-probability-medium {
+    @apply inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full
+           bg-primary-500 text-white;
+  }
+
+  .tag-probability-low {
+    @apply inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full
+           bg-sprint-500 text-white;
+  }
+
+  /* 核心数据展示 */
+  .data-core {
+    @apply text-3xl font-bold text-primary-600 tracking-tight;
+  }
+
+  .data-label {
+    @apply text-sm text-gray-500 font-medium;
+  }
+
+  /* 渐入动画 */
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.6s ease-out;
   }
 
-  .animate-slide-up {
-    animation: slideUp 0.5s ease-out;
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out;
   }
 
-  .glass-effect {
-    @apply bg-white/70 backdrop-blur-md border border-white/50;
+  /* 列表渐入动画（用于推荐列表） */
+  .animate-list-fade-in > * {
+    animation: fadeInUp 0.4s ease-out backwards;
   }
 
+  .animate-list-fade-in > *:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .animate-list-fade-in > *:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .animate-list-fade-in > *:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  .animate-list-fade-in > *:nth-child(4) {
+    animation-delay: 0.4s;
+  }
+  .animate-list-fade-in > *:nth-child(5) {
+    animation-delay: 0.5s;
+  }
+  .animate-list-fade-in > *:nth-child(6) {
+    animation-delay: 0.6s;
+  }
+
+  /* 收藏按钮弹跳 */
+  .animate-bounce-favorite {
+    animation: bounceFavorite 0.3s ease-out;
+  }
+
+  /* 文字渐变 */
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  }
-
-  .text-gradient-pink {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  }
-
-  .text-gradient-ocean {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #667eea 0%, #00d4ff 100%);
+    background-image: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   }
 }

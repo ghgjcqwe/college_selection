@@ -3,22 +3,29 @@
     class="card p-5 cursor-pointer hover:-translate-y-2 group relative overflow-hidden"
     @click="handleClick"
   >
+    <!-- 背景装饰 -->
     <div class="absolute top-0 right-0 w-20 h-20 opacity-10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"
          :class="tierGlowClass"></div>
     
+    <!-- 概率等级标签 -->
     <div class="absolute top-0 right-0 px-3 py-1 rounded-bl-lg text-xs font-bold shadow-sm" :class="probabilityClass">
       {{ probabilityLabel }}
     </div>
     
+    <!-- 学校名称和分数 -->
     <div class="flex justify-between items-start mb-3 relative">
-      <h3 class="text-lg font-bold group-hover:text-gradient transition-all duration-300 text-gray-800">
+      <h3 class="text-lg font-bold group-hover:text-primary-600 transition-colors duration-300 text-gray-800">
         {{ schoolData.name }}
       </h3>
-      <span class="text-2xl font-bold text-gradient">
-        {{ displayScore }}
-        <span class="text-sm font-normal text-gray-400">分</span>
-      </span>
+      <div class="text-right">
+        <span class="data-core text-2xl">
+          {{ displayScore }}
+        </span>
+        <span class="data-label block">最低分</span>
+      </div>
     </div>
+    
+    <!-- 位置和类型 -->
     <div class="flex items-center gap-2 mb-3 text-sm text-gray-600 flex-wrap">
       <span class="flex items-center gap-1">
         <span>📍</span> {{ schoolData.city }}
@@ -27,10 +34,11 @@
       <span>{{ schoolData.type }}</span>
     </div>
     
+    <!-- 概率进度条 -->
     <div v-if="probability !== undefined" class="mb-3">
-      <div class="flex justify-between text-xs text-gray-500 mb-1.5">
-        <span>录取概率</span>
-        <span class="font-medium" :class="probabilityTextClass">{{ probability }}%</span>
+      <div class="flex justify-between text-xs mb-1.5">
+        <span class="data-label">录取概率</span>
+        <span class="font-bold" :class="probabilityTextClass">{{ probability }}%</span>
       </div>
       <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
         <div 
@@ -43,11 +51,12 @@
       </div>
     </div>
     
+    <!-- 标签 -->
     <div class="flex flex-wrap gap-1.5">
       <span
         v-for="tag in schoolData.tags"
         :key="tag"
-        class="tag bg-gradient-to-r from-primary-50 to-purple-50 text-primary-600 text-xs font-medium"
+        class="tag bg-primary-50 text-primary-600 text-xs font-medium"
       >
         {{ tag }}
       </span>
@@ -103,32 +112,32 @@ const probabilityLabel = computed(() => {
 
 const probabilityClass = computed(() => {
   if (!probability.value) return 'bg-gray-100 text-gray-500'
-  if (probability.value >= 80) return 'bg-gradient-to-r from-green-400 to-emerald-500 text-white'
-  if (probability.value >= 50) return 'bg-gradient-to-r from-blue-400 to-indigo-500 text-white'
-  if (probability.value >= 20) return 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white'
-  return 'bg-gradient-to-r from-red-400 to-pink-500 text-white'
+  if (probability.value >= 80) return 'tag-probability-high'
+  if (probability.value >= 50) return 'tag-probability-medium'
+  if (probability.value >= 20) return 'bg-sprint-500 text-white'
+  return 'tag-probability-low'
 })
 
 const probabilityTextClass = computed(() => {
   if (!probability.value) return 'text-gray-500'
-  if (probability.value >= 80) return 'text-green-600'
-  if (probability.value >= 50) return 'text-blue-600'
-  if (probability.value >= 20) return 'text-yellow-600'
+  if (probability.value >= 80) return 'text-safety-600'
+  if (probability.value >= 50) return 'text-primary-600'
+  if (probability.value >= 20) return 'text-sprint-600'
   return 'text-red-600'
 })
 
 const probabilityGradient = computed(() => {
   if (!probability.value) return '#d1d5db'
-  if (probability.value >= 80) return 'linear-gradient(90deg, #10b981, #14b8a6)'
-  if (probability.value >= 50) return 'linear-gradient(90deg, #3b82f6, #6366f1)'
-  if (probability.value >= 20) return 'linear-gradient(90deg, #f59e0b, #f97316)'
-  return 'linear-gradient(90deg, #ef4444, #ec4899)'
+  if (probability.value >= 80) return 'linear-gradient(90deg, #10b981, #059669)'
+  if (probability.value >= 50) return 'linear-gradient(90deg, #3b82f6, #2563eb)'
+  if (probability.value >= 20) return 'linear-gradient(90deg, #f97316, #ea580c)'
+  return 'linear-gradient(90deg, #ef4444, #dc2626)'
 })
 
 const tierGlowClass = computed(() => {
-  if (props.tier === 'sprint') return 'bg-red-500'
-  if (props.tier === 'safe') return 'bg-blue-500'
-  if (props.tier === 'guarantee') return 'bg-green-500'
+  if (props.tier === 'sprint') return 'bg-sprint-500'
+  if (props.tier === 'safe') return 'bg-primary-500'
+  if (props.tier === 'guarantee') return 'bg-safety-500'
   return 'bg-primary-500'
 })
 
@@ -144,8 +153,8 @@ const scoreDiffLabel = computed(() => {
 
 const scoreDiffClass = computed(() => {
   if (scoreDifference.value === undefined) return 'text-gray-500'
-  if (scoreDifference.value > 0) return 'text-red-500'
-  return 'text-green-600'
+  if (scoreDifference.value > 0) return 'text-sprint-500'
+  return 'text-safety-500'
 })
 
 function handleClick() {
